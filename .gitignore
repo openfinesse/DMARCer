@@ -1,0 +1,36 @@
+# Python bytecode and cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+uv.lock
+
+# Egg info directories
+*.egg-info/
+
+# Distribution / packaging
+build/
+dist/
+.eggs/
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+
+# Type checking and lint caches
+.mypy_cache/
+.pyre/
+.pytype/ 
