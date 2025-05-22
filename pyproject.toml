@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.scripts]
-dmarc-analyzer = "dmarc_analyzer.cli:main"
+dmarc-analyzer = "cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"} 

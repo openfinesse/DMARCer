@@ -1,0 +1,3354 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>DMARC Report for democraticsocialists.ca</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #f9f9f9;
+            }
+            
+            h1, h2, h3 {
+                font-weight: 500;
+            }
+            
+            a {
+                color: #0366d6;
+                text-decoration: none;
+            }
+            
+            a:hover {
+                text-decoration: underline;
+            }
+            
+            .header {
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            
+            .header h1 {
+                margin-bottom: 5px;
+                font-size: 24px;
+            }
+            
+            .header p {
+                color: #666;
+                margin-top: 0;
+            }
+            
+            /* Tab styles */
+            .tabs {
+                display: flex;
+                border-bottom: 1px solid #ddd;
+                margin-bottom: 20px;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .tab-button {
+                background-color: transparent;
+                border: none;
+                outline: none;
+                cursor: pointer;
+                padding: 10px 15px;
+                margin-right: 5px;
+                font-size: 14px;
+                color: #586069;
+                border-bottom: 2px solid transparent;
+            }
+            
+            .tab-button:hover {
+                color: #0366d6;
+            }
+            
+            .tab-button.active {
+                color: #0366d6;
+                border-bottom-color: #0366d6;
+            }
+            
+            .period-content {
+                display: none;
+            }
+            
+            #period-30 {
+                display: block;
+            }
+            
+            .summary-box {
+                display: flex;
+                justify-content: space-between;
+                border: 1px solid #e1e4e8;
+                border-radius: 6px;
+                margin-bottom: 30px;
+                background-color: white;
+                overflow: hidden;
+            }
+            
+            .summary-item {
+                text-align: center;
+                flex: 1;
+                padding: 15px 10px;
+                border-right: 1px solid #e1e4e8;
+            }
+            
+            .summary-item:last-child {
+                border-right: none;
+            }
+            
+            .summary-number {
+                font-size: 32px;
+                font-weight: 300;
+                margin: 10px 0;
+                line-height: 1;
+            }
+            
+            .success { color: #6BCB77; }
+            .failure { color: #FF6B6B; }
+            .neutral { color: #70B7FF; }
+            
+            .section {
+                margin-bottom: 40px;
+                border-top: 1px solid #e1e4e8;
+                padding-top: 20px;
+            }
+            
+            .source {
+                margin-bottom: 15px;
+                background-color: white;
+                border: 1px solid #e1e4e8;
+                border-radius: 6px;
+                overflow: hidden;
+            }
+            
+            .source-header {
+                display: flex;
+                align-items: center;
+                padding: 12px 15px;
+                background-color: #f6f8fa;
+                border-bottom: 1px solid #e1e4e8;
+            }
+            
+            .icon {
+                margin-right: 8px;
+                font-size: 16px;
+                display: flex;
+                align-items: center;
+                width: 16px;
+                height: 16px;
+            }
+            
+            .favicon {
+                width: 16px;
+                height: 16px;
+                object-fit: contain;
+            }
+            
+            .domain-favicon {
+                width: 24px;
+                height: 24px;
+                object-fit: contain;
+                margin-right: 5px;
+                vertical-align: middle;
+            }
+            
+            .name {
+                flex-grow: 1;
+                font-weight: 600;
+            }
+            
+            .stats {
+                display: flex;
+                align-items: center;
+            }
+            
+            .stat-item {
+                color: #6a737d;
+                font-size: 12px;
+                text-transform: uppercase;
+                margin: 0 5px;
+                width: 90px;
+                text-align: center;
+            }
+            
+            .stat-value {
+                margin: 0 5px;
+                width: 90px;
+                text-align: center;
+            }
+            
+            .stat-placeholder {
+                width: 90px;
+                margin: 0 5px;
+                /* This class is for spacing, content is not needed */
+            }
+            
+            .ip-row {
+                display: flex;
+                padding: 10px 15px;
+                border-bottom: 1px solid #e1e4e8;
+            }
+            
+            .ip-row:last-child {
+                border-bottom: none;
+            }
+            
+            .ip {
+                flex-grow: 1;
+                font-family: monospace;
+            }
+            
+            .warning-box {
+                background-color: #FFF9C4;
+                border-left: 4px solid #FBC02D;
+                padding: 15px;
+                margin: 15px 0;
+                border-radius: 3px;
+            }
+            
+            .help-links {
+                list-style-type: none;
+                padding-left: 5px;
+                margin: 20px 0;
+            }
+            
+            .help-links li {
+                margin-bottom: 8px;
+            }
+            
+            .more-ips {
+                padding: 8px 15px;
+                font-size: 13px;
+                color: #6a737d;
+                text-align: center;
+                background-color: #f6f8fa;
+                border-top: 1px solid #e1e4e8;
+            }
+            
+            .recommendations {
+                background-color: #f6f8fa;
+                padding: 15px;
+                border-radius: 6px;
+                border: 1px solid #e1e4e8;
+            }
+            
+            .recommendations ul {
+                margin: 0;
+                padding-left: 20px;
+            }
+            
+            .footer {
+                text-align: center;
+                margin-top: 40px;
+                color: #6a737d;
+                font-size: 14px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1><img src="https://www.google.com/s2/favicons?domain=democraticsocialists.ca&sz=64" class="domain-favicon" onerror="this.style.display='none';" /> democraticsocialists.ca</h1>
+            <p id="date-range-display">Apr 14 - May 14</p>
+        </div>
+        
+        <div class="tabs"><button class="tab-button active" onclick="showPeriod('30')">Last 30 Days</button><button class="tab-button " onclick="showPeriod('90')">Last 90 Days</button><button class="tab-button " onclick="showPeriod('180')">Last 180 Days</button><button class="tab-button " onclick="showPeriod('360')">Last Year</button><button class="tab-button " onclick="showPeriod('all')">All Time</button></div>
+        
+        <div id="period-30" class="period-content" style="display: block">
+    <div class="summary-box">
+        <div class="summary-item">
+            <span class="summary-number neutral">478</span>
+            <div>Emails processed</div>
+        </div>
+        <div class="summary-item">
+            <span class="summary-number success">478</span>
+            <div>Emails passed DMARC</div>
+        </div>
+        <div class="summary-item">
+            <span class="summary-number failure">0</span>
+            <div>Emails failed DMARC</div>
+        </div>
+    </div>
+    
+    
+    <div class="section">
+        <h2>Authenticated sources</h2>
+        <p>These are sources that were identified as legitimate senders for your domain based on authentication results.</p>
+    
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/nationbuilder.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">NationBuilder</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">384</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">100%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">97%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">167.89.84.169</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">77</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.27.118</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">78</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">97%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.23.13</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">84</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">96%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.28.74</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">75</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">97%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.27.115</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">70</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">95%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/google.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">Google</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">92</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">95%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">100%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">209.85.208.178</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.220.41</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">57</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">92%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.220.73</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">20</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.210.74</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.161.73</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.180</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.176</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.177</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.218.48</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.160.172</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.222.170</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.220.65</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.219.67</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.219.65</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/microsoft.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">Microsoft</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">2</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">0%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">100%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">2a01:111:f403:c104::1</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">2a01:111:f403:c103::</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+    </div>
+    
+    
+    
+        <div class="section">
+            <h2>Unauthenticated sources</h2>
+            <p>These sources are sending emails from your domain, but could not be verified through authentication.</p>
+            <p>No sources found in this category.</p>
+        </div>
+        
+    
+    
+        <div class="section">
+            <h2>Forwarded email sources</h2>
+            <p>These sources appear to be forwarded emails. Forwarded emails often preserve DKIM signatures while failing SPF alignment.</p>
+            <p>No sources found in this category.</p>
+        </div>
+        
+    
+    <div class="section recommendations">
+        <h2>Recommendations for Last 30 Days</h2>
+        <ul>
+            <li>Consider moving to &#x27;p=reject&#x27; with pct=5 as alignment rate is excellent (100.0%).</li><li>You have 21 sending sources, which increases risk during policy enforcement.</li><li>Consider setting &#x27;sp=reject&#x27; to protect against subdomain spoofing.</li>
+        </ul>
+    </div>
+    </div><div id="period-90" class="period-content" style="display: none">
+    <div class="summary-box">
+        <div class="summary-item">
+            <span class="summary-number neutral">880</span>
+            <div>Emails processed</div>
+        </div>
+        <div class="summary-item">
+            <span class="summary-number success">880</span>
+            <div>Emails passed DMARC</div>
+        </div>
+        <div class="summary-item">
+            <span class="summary-number failure">0</span>
+            <div>Emails failed DMARC</div>
+        </div>
+    </div>
+    
+    
+    <div class="section">
+        <h2>Authenticated sources</h2>
+        <p>These are sources that were identified as legitimate senders for your domain based on authentication results.</p>
+    
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/nationbuilder.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">NationBuilder</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">669</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">99%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">97%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">167.89.27.118</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">123</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">97%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.109.128</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">52</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">94%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.27.115</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">132</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">96%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.28.74</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">134</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">97%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">50.31.32.208</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">47</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">93%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.84.169</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">90</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">98%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.23.13</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">91</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">96%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/google.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">Google</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">209</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">86%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">100%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">209.85.220.41</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">110</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">93%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.176</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">6</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.180</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.171</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">5</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.173</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.220.73</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">38</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">60%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.160.73</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">33%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.160.74</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">33%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.210.74</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">66%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.210.73</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">66%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.178</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.181</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.177</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.182</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.219.50</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.169</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.172</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.167.201</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.175</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.167.53</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.170</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.174</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.161.73</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.218.48</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.160.172</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.222.170</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.220.65</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.219.67</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.219.65</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/microsoft.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">Microsoft</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">2</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">0%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">100%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">2a01:111:f403:c104::1</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">2a01:111:f403:c103::</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+    </div>
+    
+    
+    
+        <div class="section">
+            <h2>Unauthenticated sources</h2>
+            <p>These sources are sending emails from your domain, but could not be verified through authentication.</p>
+            <p>No sources found in this category.</p>
+        </div>
+        
+    
+    
+        <div class="section">
+            <h2>Forwarded email sources</h2>
+            <p>These sources appear to be forwarded emails. Forwarded emails often preserve DKIM signatures while failing SPF alignment.</p>
+            <p>No sources found in this category.</p>
+        </div>
+        
+    
+    <div class="section recommendations">
+        <h2>Recommendations for Last 90 Days</h2>
+        <ul>
+            <li>Consider moving to &#x27;p=reject&#x27; with pct=5 as alignment rate is excellent (100.0%).</li><li>Consider setting &#x27;sp=reject&#x27; to protect against subdomain spoofing.</li><li>You have 38 sending sources, which increases risk during policy enforcement.</li>
+        </ul>
+    </div>
+    </div><div id="period-180" class="period-content" style="display: none">
+    <div class="summary-box">
+        <div class="summary-item">
+            <span class="summary-number neutral">2055</span>
+            <div>Emails processed</div>
+        </div>
+        <div class="summary-item">
+            <span class="summary-number success">2045</span>
+            <div>Emails passed DMARC</div>
+        </div>
+        <div class="summary-item">
+            <span class="summary-number failure">10</span>
+            <div>Emails failed DMARC</div>
+        </div>
+    </div>
+    
+    
+    <div class="section">
+        <h2>Authenticated sources</h2>
+        <p>These are sources that were identified as legitimate senders for your domain based on authentication results.</p>
+    
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/nationbuilder.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">NationBuilder</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">1629</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">99%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">97%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">149.72.116.185</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">29</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.23.203</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">28</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.27.113</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">26</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">84%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.109.128</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">263</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">98%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.27.118</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">284</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">98%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">50.31.32.208</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">190</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">96%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.28.74</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">345</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">98%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.27.115</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">283</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">96%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.84.169</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">90</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">98%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.23.13</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">91</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">96%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/google.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">Google</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">414</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">86%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">98%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">209.85.208.181</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">5</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.42</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">50%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.215.175</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.161.44</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.215.178</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.220.41</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">262</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">90%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">99%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.166.104</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.218.47</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.218.54</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.222.174</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.179</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.177</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.178</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">5</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.44</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.174</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">5</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.182</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">4</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.180</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">7</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.218.42</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.216.46</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.175</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.220.69</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.218.53</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.171</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">6</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.218.44</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.220.73</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">46</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">65%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.128.48</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.173</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">2607:f8b0:4864:20::102a</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.166.74</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.216.41</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.170</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.45</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">2607:f8b0:4864:20::1034</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.176</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">6</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.160.73</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">33%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.160.74</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">33%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.210.74</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">66%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.210.73</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">66%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.219.50</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.169</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.172</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.167.201</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.167.53</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.161.73</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.218.48</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.160.172</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.222.170</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.220.65</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.219.67</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.219.65</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/microsoft.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">Microsoft</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">6</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">0%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">100%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">52.101.189.138</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">2a01:111:f403:c103::3</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">2a01:111:f403:c104::1</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">2a01:111:f403:c103::5</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">2a01:111:f403:c103::</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/messagingengine.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">Messagingengine</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">1</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">0%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">100%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">103.168.172.194</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/zoho.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">Zoho</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">1</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">0%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">100%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">8.40.222.250</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+    </div>
+    
+    
+    
+    <div class="section">
+        <h2>Unauthenticated sources</h2>
+        <p>These sources are sending emails from your domain, but could not be verified through authentication.</p>
+    
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/colocrossing.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">Colocrossing</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">4</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">0%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">0%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">107.172.44.136</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">104.168.34.164</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+    </div>
+    
+    
+    
+        <div class="section">
+            <h2>Forwarded email sources</h2>
+            <p>These sources appear to be forwarded emails. Forwarded emails often preserve DKIM signatures while failing SPF alignment.</p>
+            <p>No sources found in this category.</p>
+        </div>
+        
+    
+    <div class="section recommendations">
+        <h2>Recommendations for Last 180 Days</h2>
+        <ul>
+            <li>You have 69 sending sources, which increases risk during policy enforcement.</li><li>Consider moving to &#x27;p=reject&#x27; with pct=5 as alignment rate is excellent (99.5%).</li><li>Consider setting &#x27;sp=reject&#x27; to protect against subdomain spoofing.</li>
+        </ul>
+    </div>
+    </div><div id="period-360" class="period-content" style="display: none">
+    <div class="summary-box">
+        <div class="summary-item">
+            <span class="summary-number neutral">2055</span>
+            <div>Emails processed</div>
+        </div>
+        <div class="summary-item">
+            <span class="summary-number success">2045</span>
+            <div>Emails passed DMARC</div>
+        </div>
+        <div class="summary-item">
+            <span class="summary-number failure">10</span>
+            <div>Emails failed DMARC</div>
+        </div>
+    </div>
+    
+    
+    <div class="section">
+        <h2>Authenticated sources</h2>
+        <p>These are sources that were identified as legitimate senders for your domain based on authentication results.</p>
+    
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/nationbuilder.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">NationBuilder</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">1629</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">99%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">97%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">149.72.116.185</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">29</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.23.203</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">28</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.27.113</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">26</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">84%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.109.128</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">263</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">98%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.27.118</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">284</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">98%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">50.31.32.208</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">190</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">96%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.28.74</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">345</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">98%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.27.115</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">283</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">96%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.84.169</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">90</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">98%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.23.13</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">91</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">96%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/google.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">Google</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">414</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">86%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">98%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">209.85.208.181</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">5</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.42</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">50%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.215.175</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.161.44</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.215.178</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.220.41</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">262</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">90%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">99%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.166.104</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.218.47</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.218.54</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.222.174</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.179</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.177</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.178</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">5</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.44</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.174</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">5</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.182</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">4</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.180</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">7</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.218.42</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.216.46</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.175</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.220.69</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.218.53</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.171</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">6</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.218.44</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.220.73</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">46</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">65%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.128.48</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.173</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">2607:f8b0:4864:20::102a</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.166.74</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.216.41</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.170</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.45</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">2607:f8b0:4864:20::1034</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.176</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">6</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.160.73</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">33%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.160.74</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">33%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.210.74</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">66%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.210.73</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">66%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.219.50</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.169</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.172</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.167.201</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.167.53</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.161.73</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.218.48</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.160.172</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.222.170</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.220.65</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.219.67</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.219.65</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/microsoft.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">Microsoft</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">6</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">0%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">100%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">52.101.189.138</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">2a01:111:f403:c103::3</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">2a01:111:f403:c104::1</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">2a01:111:f403:c103::5</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">2a01:111:f403:c103::</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/messagingengine.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">Messagingengine</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">1</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">0%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">100%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">103.168.172.194</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/zoho.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">Zoho</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">1</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">0%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">100%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">8.40.222.250</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+    </div>
+    
+    
+    
+    <div class="section">
+        <h2>Unauthenticated sources</h2>
+        <p>These sources are sending emails from your domain, but could not be verified through authentication.</p>
+    
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/colocrossing.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">Colocrossing</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">4</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">0%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">0%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">107.172.44.136</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">104.168.34.164</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+    </div>
+    
+    
+    
+        <div class="section">
+            <h2>Forwarded email sources</h2>
+            <p>These sources appear to be forwarded emails. Forwarded emails often preserve DKIM signatures while failing SPF alignment.</p>
+            <p>No sources found in this category.</p>
+        </div>
+        
+    
+    <div class="section recommendations">
+        <h2>Recommendations for Last Year</h2>
+        <ul>
+            <li>You have 69 sending sources, which increases risk during policy enforcement.</li><li>Consider moving to &#x27;p=reject&#x27; with pct=5 as alignment rate is excellent (99.5%).</li><li>Consider setting &#x27;sp=reject&#x27; to protect against subdomain spoofing.</li>
+        </ul>
+    </div>
+    </div><div id="period-all" class="period-content" style="display: none">
+    <div class="summary-box">
+        <div class="summary-item">
+            <span class="summary-number neutral">2055</span>
+            <div>Emails processed</div>
+        </div>
+        <div class="summary-item">
+            <span class="summary-number success">2045</span>
+            <div>Emails passed DMARC</div>
+        </div>
+        <div class="summary-item">
+            <span class="summary-number failure">10</span>
+            <div>Emails failed DMARC</div>
+        </div>
+    </div>
+    
+    
+    <div class="section">
+        <h2>Authenticated sources</h2>
+        <p>These are sources that were identified as legitimate senders for your domain based on authentication results.</p>
+    
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/nationbuilder.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">NationBuilder</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">1629</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">99%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">97%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">149.72.116.185</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">29</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.23.203</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">28</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.27.113</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">26</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">84%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.109.128</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">263</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">98%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.27.118</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">284</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">98%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">50.31.32.208</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">190</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">96%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.28.74</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">345</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">98%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.27.115</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">283</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">96%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.84.169</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">90</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">98%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">167.89.23.13</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">91</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">96%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/google.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">Google</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">414</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">86%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">98%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">209.85.208.181</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">5</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.42</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">50%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.215.175</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.161.44</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.215.178</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.220.41</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">262</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">90%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">99%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.166.104</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.218.47</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.218.54</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.222.174</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.179</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.177</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.178</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">5</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.44</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.174</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">5</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.182</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">4</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.180</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">7</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.218.42</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.216.46</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.175</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.220.69</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.218.53</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.171</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">6</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.218.44</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.220.73</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">46</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">65%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.128.48</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.173</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">2607:f8b0:4864:20::102a</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.166.74</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.216.41</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.170</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.45</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">2607:f8b0:4864:20::1034</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.176</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">6</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.160.73</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">33%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.160.74</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">33%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.210.74</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">66%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.210.73</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">66%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.219.50</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.169</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.208.172</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.167.201</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.167.53</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.161.73</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.218.48</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.160.172</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.222.170</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.220.65</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">3</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.219.67</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">209.85.219.65</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/microsoft.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">Microsoft</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">6</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">0%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">100%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">52.101.189.138</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">2a01:111:f403:c103::3</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">2a01:111:f403:c104::1</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">2a01:111:f403:c103::5</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">2a01:111:f403:c103::</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/messagingengine.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">Messagingengine</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">1</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">0%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">100%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">103.168.172.194</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/zoho.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">Zoho</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">1</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">0%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">100%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">8.40.222.250</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">1</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">100%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+    </div>
+    
+    
+    
+    <div class="section">
+        <h2>Unauthenticated sources</h2>
+        <p>These sources are sending emails from your domain, but could not be verified through authentication.</p>
+    
+        <div class="source">
+            <div class="source-header">
+                <span class="icon">
+                    <img src="https://icons.duckduckgo.com/ip3/colocrossing.com.ico" class="favicon" alt="" onerror="this.style.display='none';" />
+                </span>
+                <span class="name">Colocrossing</span>
+                <span class="stats">
+                    <span class="stat-item">TOTAL</span>
+                    <span class="stat-value">4</span>
+                    <span class="stat-item">PASSED SPF</span>
+                    <span class="stat-value">0%</span>
+                    <span class="stat-item">PASSED DKIM</span>
+                    <span class="stat-value">0%</span>
+                </span>
+            </div>
+        
+            <div class="ip-row">
+                <span class="ip">107.172.44.136</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                </span>
+            </div>
+            
+            <div class="ip-row">
+                <span class="ip">104.168.34.164</span>
+                <span class="stats">
+                    <span class="stat-placeholder"></span><span class="stat-value">2</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                    <span class="stat-placeholder"></span><span class="stat-value">0%</span>
+                </span>
+            </div>
+            
+        </div>
+        
+    </div>
+    
+    
+    
+        <div class="section">
+            <h2>Forwarded email sources</h2>
+            <p>These sources appear to be forwarded emails. Forwarded emails often preserve DKIM signatures while failing SPF alignment.</p>
+            <p>No sources found in this category.</p>
+        </div>
+        
+    
+    <div class="section recommendations">
+        <h2>Recommendations for All Time</h2>
+        <ul>
+            <li>You have 69 sending sources, which increases risk during policy enforcement.</li><li>Consider moving to &#x27;p=reject&#x27; with pct=5 as alignment rate is excellent (99.5%).</li><li>Consider setting &#x27;sp=reject&#x27; to protect against subdomain spoofing.</li>
+        </ul>
+    </div>
+    </div>
+        
+        
+    <script>
+    // Store date ranges for each period
+    const periodDateRanges = {'30': 'Apr 14 - May 14','90': 'Feb 13 - May 14','180': 'Dec 10 - May 14','360': 'Dec 10 - May 14','all': 'Dec 10 - May 14'};
+    
+    function showPeriod(periodId) {
+        // Hide all period content
+        var periodContents = document.getElementsByClassName("period-content");
+        for (var i = 0; i < periodContents.length; i++) {
+            periodContents[i].style.display = "none";
+        }
+        
+        // Show the selected period content
+        document.getElementById("period-" + periodId).style.display = "block";
+        
+        // Update active tab button
+        var tabButtons = document.getElementsByClassName("tab-button");
+        for (var i = 0; i < tabButtons.length; i++) {
+            tabButtons[i].classList.remove("active");
+        }
+        
+        // Find the clicked button and make it active
+        event.currentTarget.classList.add("active");
+        
+        // Update the date range in the header
+        if (periodDateRanges[periodId]) {
+            document.getElementById("date-range-display").innerHTML = periodDateRanges[periodId];
+        }
+    }
+    </script>
+    
+    </body>
+    </html>
+    

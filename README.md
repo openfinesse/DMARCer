@@ -3,15 +3,19 @@
 A tool that enables easy analysis of DMARC XML reports and provides insights into SPF and DKIM alignment.
 See where your emails are coming from and how they are being authenticated.
 
+This project was heavily inspired by [Postmark's DMARC Monitoring Email](https://dmarc.postmarkapp.com/).
+
 ## Installation
 
-```
+```bash
 pip install .
 ```
 
+Recommended to use a virtual environment.
+
 ## Usage
 
-```
+```bash
 dmarc-analyzer /path/to/dmarc/reports
 ```
 
