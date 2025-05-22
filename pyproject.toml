@@ -3,7 +3,7 @@ requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "dmarc-analyzer"
+name = "dmarcer"
 version = "1.0.0"
 description = "Analyze DMARC XML reports and provide authentication result summaries"
 readme = "README.md"
@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.scripts]
-dmarc-analyzer = "cli:main"
+dmarcer = "cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"} 

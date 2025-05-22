@@ -1,4 +1,4 @@
-# DMARC Analyzer
+# DMARCer
 
 A tool that enables easy analysis of DMARC XML reports and provides insights into SPF and DKIM alignment.
 See where your emails are coming from and how they are being authenticated.
@@ -14,7 +14,7 @@ Recommended to use a virtual environment.
 ## Usage
 
 ```bash
-dmarc-analyzer /path/to/dmarc/reports
+dmarcer /path/to/dmarc/reports
 ```
 
 ### Options
@@ -29,7 +29,7 @@ dmarc-analyzer /path/to/dmarc/reports
 ## Example
 
 ```bash
-dmarc-analyzer /path/to/dmarc/reports --html -r
+dmarcer /path/to/dmarc/reports --html -r
 ```
 
 ## Credits
