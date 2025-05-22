@@ -3,6 +3,8 @@
 A tool that enables easy analysis of DMARC XML reports and provides insights into SPF and DKIM alignment.
 See where your emails are coming from and how they are being authenticated.
 
+![Simple HTML Report](./screenshots/simple-report.png)
+
 ## Installation
 
 ```bash
